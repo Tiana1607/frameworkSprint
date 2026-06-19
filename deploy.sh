@@ -1,55 +1,41 @@
 #!/bin/bash
-
-# ─── CONFIG ───────────────────────────────────────────
 SRC="src/main/java"
 BUILD="build/classes"
 JAR_OUT="jar/framework.jar"
 LIB="lib/servlet-api.jar"
 
+TEST_SRC="test/src/main/java"
+TEST_BUILD="test/webapp/WEB-INF/classes"   # ← Tomcat lit les .class ici
 TEST_WEBAPP="test/webapp"
-TEST_BUILD="test/build"
-WAR_NAME="monapp.war"
-WAR_OUT="$TEST_BUILD/$WAR_NAME"
+WAR_OUT="test/build/monapp.war"
 
-# Adapte ce chemin à ton installation Tomcat
 TOMCAT_WEBAPPS="/home/rovatians/Téléchargements/logiciel/tomcat/apache-tomcat-10.0.16/webapps"
-# ─────────────────────────────────────────────────────
 
-# Créer les dossiers si absents
-mkdir -p $BUILD
-mkdir -p jar
-mkdir -p $TEST_WEBAPP/WEB-INF/lib
-mkdir -p $TEST_BUILD
+mkdir -p $BUILD jar $TEST_WEBAPP/WEB-INF/lib $TEST_BUILD test/build
 
-# 1. Compiler le framework
-echo "==== [1/4] COMPILATION FRAMEWORK ===="
-mkdir -p $BUILD
+echo "==== [1/5] COMPILATION FRAMEWORK ===="
 javac -cp $LIB -d $BUILD $(find $SRC -name "*.java")
 if [ $? -ne 0 ]; then echo "Erreur compilation framework"; exit 1; fi
 
-# 2. Créer le JAR du framework
-echo "==== [2/4] CREATION JAR ===="
-mkdir -p jar
+echo "==== [2/5] CREATION JAR ===="
 jar cf $JAR_OUT -C $BUILD .
 cp $JAR_OUT $TEST_WEBAPP/WEB-INF/lib/framework.jar
 echo "framework.jar créé"
 
-# 3. Créer le WAR de l'app de test
-echo "==== [3/4] CREATION WAR ===="
-mkdir -p $TEST_BUILD
-jar cf $WAR_OUT -C $TEST_WEBAPP .
-echo "$WAR_NAME créé"
+echo "==== [3/5] COMPILATION CONTROLLERS DE TEST ===="
+javac -cp "$LIB:$JAR_OUT" -d $TEST_BUILD $(find $TEST_SRC -name "*.java")
+if [ $? -ne 0 ]; then echo "Erreur compilation test"; exit 1; fi
 
-# 4. Déployer dans Tomcat
-echo "==== [4/4] DEPLOIEMENT TOMCAT ===="
+echo "==== [4/5] CREATION WAR ===="
+jar cf $WAR_OUT -C $TEST_WEBAPP .
+echo "monapp.war créé"
+
+echo "==== [5/5] DEPLOIEMENT TOMCAT ===="
 if [ -d "$TOMCAT_WEBAPPS" ]; then
     cp $WAR_OUT $TOMCAT_WEBAPPS/
-    echo " Déployé dans $TOMCAT_WEBAPPS"
+    echo "Déployé dans $TOMCAT_WEBAPPS"
 else
-    echo " Tomcat introuvable à : $TOMCAT_WEBAPPS"
-    echo " Copie manuelle : cp $WAR_OUT /home/rovatians/Téléchargements/logiciel/tomcat/apache-tomcat-10.0.16/webapps/"
+    echo "Tomcat introuvable à : $TOMCAT_WEBAPPS"
 fi
 
-echo ""
-echo "==== DONE ===="
 echo "→ http://localhost:8081/monapp/"

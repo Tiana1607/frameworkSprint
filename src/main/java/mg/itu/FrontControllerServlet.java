@@ -1,20 +1,15 @@
 package mg.itu;
 
-import java.io.IOException;
-
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import mg.itu.util.ClassScanner;
+import mg.itu.annotation.controller.Controller;
+import java.io.*;
+import java.util.List;
 
 public class FrontControllerServlet extends HttpServlet {
-
-    protected void processRequest(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-        String url = req.getRequestURI();
-
-        res.setContentType("text/html; charset=UTF-8");
-        res.getWriter().println("<h1>FrontControllerServlet : " + url + "</h1>");
-    }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -26,5 +21,28 @@ public class FrontControllerServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
         processRequest(req, resp);
+    }
+
+    protected void processRequest(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
+        resp.setContentType("text/html;charset=UTF-8");
+        PrintWriter out = resp.getWriter();
+
+        try {
+            List<Class<?>> controllers = ClassScanner.getClassesByAnnotation(
+                    "controllers", Controller.class
+            );
+
+            out.println("<h1>Controllers trouvés :</h1><ul>");
+            for (Class<?> c : controllers) {
+                out.println("<li>" + c.getName() + "</li>");
+            }
+            out.println("</ul>");
+
+        } catch (Exception e) {
+            out.println("<h1>Erreur scan :</h1><pre>");
+            e.printStackTrace(out);
+            out.println("</pre>");
+        }
     }
 }
