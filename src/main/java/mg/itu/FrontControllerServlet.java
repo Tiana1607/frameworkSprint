@@ -11,6 +11,26 @@ import java.util.List;
 
 public class FrontControllerServlet extends HttpServlet {
 
+    private List<Class<?>> controllers;
+
+    @Override
+    public void init() throws ServletException {
+        super.init();
+
+        // 1. Récupère le package à scanner depuis le web.xml
+        String packageName = getServletConfig().getInitParameter("controllerPackage");
+
+        // if (packageName == null || packageName.isEmpty()) {
+        //     packageName = "controllers";
+        // }
+
+        try {
+            controllers = ClassScanner.getClassesByAnnotation(packageName, Controller.class);
+        } catch (Exception e) {
+            throw new ServletException("Erreur lors du scan des controllers", e);
+        }
+    }
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
@@ -28,21 +48,10 @@ public class FrontControllerServlet extends HttpServlet {
         resp.setContentType("text/html;charset=UTF-8");
         PrintWriter out = resp.getWriter();
 
-        try {
-            List<Class<?>> controllers = ClassScanner.getClassesByAnnotation(
-                    "controllers", Controller.class
-            );
-
-            out.println("<h1>Controllers trouvés :</h1><ul>");
-            for (Class<?> c : controllers) {
-                out.println("<li>" + c.getName() + "</li>");
-            }
-            out.println("</ul>");
-
-        } catch (Exception e) {
-            out.println("<h1>Erreur scan :</h1><pre>");
-            e.printStackTrace(out);
-            out.println("</pre>");
+        out.println("<h1>Controllers chargés au démarrage :</h1><ul>");
+        for (Class<?> c : controllers) {
+            out.println("<li>" + c.getName() + "</li>");
         }
+        out.println("</ul>");
     }
 }
