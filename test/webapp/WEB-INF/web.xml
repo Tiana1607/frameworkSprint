@@ -5,15 +5,24 @@
         <servlet-name>FrontController</servlet-name>
         <servlet-class>mg.itu.FrontControllerServlet</servlet-class>
 
+<<<<<<< HEAD
         <!-- ← Paramètre d'init lu dans init() -->
+=======
+
+>>>>>>> main
         <init-param>
             <param-name>controllerPackage</param-name>
             <param-value>controllers</param-value>
         </init-param>
+<<<<<<< HEAD
 
         <load-on-startup>1</load-on-startup>  <!-- charge la servlet dès le démarrage de Tomcat, pas à
         la 1ère requête -->
+=======
+>>>>>>> main
     </servlet>
+
+    <load-on-startup>1</load-on-startup>
 
     <servlet-mapping>
         <servlet-name>FrontController</servlet-name>
