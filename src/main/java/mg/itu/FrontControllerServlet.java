@@ -63,36 +63,36 @@ public class FrontControllerServlet extends HttpServlet {
         }
         out.println("</ul>");
 
-        out.println("<h2>Mappings URL :</h2>");
+        String contextPath = req.getContextPath();
+
+        String requestedUrl = req.getRequestURI()
+                .substring(contextPath.length());
+
+        if (!urls.contains(requestedUrl)) {
+            throw new ServletException(
+                    "URL inconnue : " + requestedUrl
+                    + "\nURLs supportées : " + urlMapping.keySet());
+        }
+
+        Map<Class<?>, List<Method>> classMap
+                = urlMapping.get(requestedUrl);
+
+        out.println("<h2>Resultat :</h2>");
         out.println("<ul>");
 
-        for (Map.Entry<String, Map<Class<?>, List<Method>>> urlEntry : urlMapping.entrySet()) {
+        for (Map.Entry<Class<?>, List<Method>> entry : classMap.entrySet()) {
 
-            String url = urlEntry.getKey();
+            Class<?> controller = entry.getKey();
 
-            if (!urls.contains(url)) {
-                throw new ServletException(
-                        "URL inconnue : " + url +
-                                "\nURLs supportées : " + urls);
-            }
+            for (Method method : entry.getValue()) {
 
-            Map<Class<?>, List<Method>> classMap = urlEntry.getValue();
-
-            for (Map.Entry<Class<?>, List<Method>> classEntry : classMap.entrySet()) {
-
-                Class<?> controllerClass = classEntry.getKey();
-                List<Method> methods = classEntry.getValue();
-
-                for (Method method : methods) {
-
-                    out.println("<li>"
-                            + "\"" + url + "\" : "
-                            + controllerClass.getSimpleName()
-                            + " → "
-                            + method.getName()
-                            + "()"
-                            + "</li>");
-                }
+                out.println("<li>"
+                        + requestedUrl + " → "
+                        + controller.getSimpleName()
+                        + " -> "
+                        + method.getName()
+                        + "()"
+                        + "</li>");
             }
         }
 
