@@ -3,11 +3,19 @@
     <servlet>
         <servlet-name>FrontController</servlet-name>
         <servlet-class>mg.itu.FrontControllerServlet</servlet-class>
+
+
+        <init-param>
+            <param-name>controllerPackage</param-name>
+            <param-value>controllers</param-value>
+        </init-param>
     </servlet>
+
+    <load-on-startup>1</load-on-startup>
 
     <servlet-mapping>
         <servlet-name>FrontController</servlet-name>
-        <url-pattern>/*</url-pattern>  
+        <url-pattern>/*</url-pattern>
     </servlet-mapping>
 
 </web-app>
