@@ -7,14 +7,14 @@ import mg.itu.annotation.url.UrlMapping;
 public class B {
 
     @UrlMapping(value = "/blabla", method = "POST")
-    public void afficher()
+    public String afficher()
     {
-        System.out.println("Bonjour !!!");
+        return "Bonjour !!!";
     }
 
     @UrlMapping(value = "/blabla", method = "GET")
-    public void afficherAide()
+    public String afficherAide()
     {
-        System.out.println("HELPPPP !!!");
+        return "HELPPPP !!!";
     }
 }

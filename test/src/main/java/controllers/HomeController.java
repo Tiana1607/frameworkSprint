@@ -7,17 +7,17 @@ import mg.itu.annotation.url.UrlMapping;
 public class HomeController {
 
     @UrlMapping(value = "/home", method = "GET")
-    public void index() {
-        System.out.println("GET /home appelé !");
+    public String index() {
+       return "GET /home appelé !";
     }
 
     @UrlMapping(value = "/home", method = "POST")
-    public void submit() {
-        System.out.println("POST /home appelé !");
+    public String submit() {
+       return "POST /home appelé !";
     }
 
     @UrlMapping(value = "/about", method = "GET")
-    public void about() {
-        System.out.println("GET /about appelé !");
+    public String about() {
+       return "GET /about appelé !";
     }
 }

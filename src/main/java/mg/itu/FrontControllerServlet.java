@@ -70,5 +70,24 @@ public class FrontControllerServlet extends HttpServlet {
         } else {
             out.println("<p style='color:red'> Aucune route trouvée</p>");
         }
+
+        if (method == null) {
+            resp.sendError(404, "Aucune route : " + key);
+            return;
+        }
+
+        try {
+            Object controllerInstance = method.getDeclaringClass()
+                    .getDeclaredConstructor()
+                    .newInstance();
+
+            String result = (String) method.invoke(controllerInstance);
+
+            // Afficher le texte
+            out.println(result);
+
+        } catch (Exception e) {
+            throw new ServletException("Erreur invocation", e);
+        }
     }
 }

@@ -7,8 +7,8 @@ import mg.itu.annotation.url.UrlMapping;
 public class C {
 
     @UrlMapping(value = "/help", method = "GET")
-    public void afficher()
+    public String afficher()
     {
-        System.out.println("Bonjour !!!");
+        return "Bonjour !!!";
     }
 }
