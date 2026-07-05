@@ -16,22 +16,22 @@ import java.util.Map;
 
 public class FrontControllerServlet extends HttpServlet {
 
-    private Map<UrlMethod, Method> urlMethodMap;
+    // private Map<UrlMethod, Method> urlMethodMap;
 
-    @Override
-    public void init() throws ServletException {
-        super.init();
-        String packageName = getServletConfig().getInitParameter("controllerPackage");
-        if (packageName == null || packageName.isEmpty()) {
-            packageName = "controllers";
-        }
+    // @Override
+    // public void init() throws ServletException {
+    //     super.init();
+    //     String packageName = getServletConfig().getInitParameter("controllerPackage");
+    //     if (packageName == null || packageName.isEmpty()) {
+    //         packageName = "controllers";
+    //     }
 
-        try {
-            urlMethodMap = ClassScanner.getUrlMethodMap(packageName);
-        } catch (Exception e) {
-            throw new ServletException("Erreur init scan", e);
-        }
-    }
+    //     try {
+    //         urlMethodMap = ClassScanner.getUrlMethodMap(packageName);
+    //     } catch (Exception e) {
+    //         throw new ServletException("Erreur init scan", e);
+    //     }
+    // }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -49,6 +49,8 @@ public class FrontControllerServlet extends HttpServlet {
             throws ServletException, IOException {
         resp.setContentType("text/html;charset=UTF-8");
         PrintWriter out = resp.getWriter();
+
+        Map<UrlMethod, Method> urlMethodMap = (Map<UrlMethod, Method>) getServletContext().getAttribute("urlMethodMap");
 
         // Affiche toutes les routes enregistrées
         out.println("<h2>Routes enregistrées :</h2><ul>");

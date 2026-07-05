@@ -12,7 +12,11 @@
         </init-param>
     </servlet>
 
-    <load-on-startup>1</load-on-startup>
+    <!-- <load-on-startup>1</load-on-startup> -->
+
+     <listener>
+        <listener-class>mg.itu.listener.FrontControllerListener</listener-class>
+    </listener>
 
     <servlet-mapping>
         <servlet-name>FrontController</servlet-name>
