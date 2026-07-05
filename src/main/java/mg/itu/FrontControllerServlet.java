@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import mg.itu.annotation.url.UrlMapping;
 import mg.itu.util.ClassScanner;
+import mg.itu.util.UrlMethod;
 import mg.itu.annotation.controller.Controller;
 import java.io.*;
 import java.lang.reflect.Method;
@@ -15,27 +16,20 @@ import java.util.Map;
 
 public class FrontControllerServlet extends HttpServlet {
 
-    private List<Class<?>> controllers;
-    private Map<String, Map<Class<?>, List<Method>>> urlMapping;
-    private List<String> urls;
+    private Map<UrlMethod, Method> urlMethodMap;
 
     @Override
     public void init() throws ServletException {
         super.init();
-
         String packageName = getServletConfig().getInitParameter("controllerPackage");
-
         if (packageName == null || packageName.isEmpty()) {
             packageName = "controllers";
         }
 
         try {
-            controllers = ClassScanner.getClassesByAnnotation(packageName, Controller.class);
-            urlMapping = ClassScanner.getAnnotatedMethodsByUrl(Controller.class, packageName, UrlMapping.class);
-
-            urls = ClassScanner.ifUrlExists(packageName);
+            urlMethodMap = ClassScanner.getUrlMethodMap(packageName);
         } catch (Exception e) {
-            throw new ServletException("Erreur lors du scan des controllers", e);
+            throw new ServletException("Erreur init scan", e);
         }
     }
 
@@ -53,49 +47,28 @@ public class FrontControllerServlet extends HttpServlet {
 
     protected void processRequest(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
-
         resp.setContentType("text/html;charset=UTF-8");
         PrintWriter out = resp.getWriter();
 
-        out.println("<h1>Controllers chargés au démarrage :</h1><ul>");
-        for (Class<?> c : controllers) {
-            out.println("<li>" + c.getName() + "</li>");
+        // Affiche toutes les routes enregistrées
+        out.println("<h2>Routes enregistrées :</h2><ul>");
+        for (Map.Entry<UrlMethod, Method> entry : urlMethodMap.entrySet()) {
+            out.println("<li>" + entry.getKey() + " → " + entry.getValue().getName() + "</li>");
         }
         out.println("</ul>");
 
-        String contextPath = req.getContextPath();
+        // Affiche la route demandée
+        String url = req.getRequestURI().substring(req.getContextPath().length());
+        url = url.substring("/app".length());
+        String httpMethod = req.getMethod();
+        UrlMethod key = new UrlMethod(url, httpMethod);
+        Method method = urlMethodMap.get(key);
 
-        String requestedUrl = req.getRequestURI()
-                .substring(contextPath.length());
-
-        if (!urls.contains(requestedUrl)) {
-            throw new ServletException(
-                    "URL inconnue : " + requestedUrl
-                    + "\nURLs supportées : " + urlMapping.keySet());
+        out.println("<h2>Requête actuelle : " + key + "</h2>");
+        if (method != null) {
+            out.println("<p style='color:green'> Route trouvée → " + method.getName() + "</p>");
+        } else {
+            out.println("<p style='color:red'> Aucune route trouvée</p>");
         }
-
-        Map<Class<?>, List<Method>> classMap
-                = urlMapping.get(requestedUrl);
-
-        out.println("<h2>Resultat :</h2>");
-        out.println("<ul>");
-
-        for (Map.Entry<Class<?>, List<Method>> entry : classMap.entrySet()) {
-
-            Class<?> controller = entry.getKey();
-
-            for (Method method : entry.getValue()) {
-
-                out.println("<li>"
-                        + requestedUrl + " → "
-                        + controller.getSimpleName()
-                        + " -> "
-                        + method.getName()
-                        + "()"
-                        + "</li>");
-            }
-        }
-
-        out.println("</ul>");
     }
 }

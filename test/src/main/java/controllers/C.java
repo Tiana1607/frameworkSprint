@@ -6,7 +6,7 @@ import mg.itu.annotation.url.UrlMapping;
 @Controller
 public class C {
 
-    @UrlMapping("/blabla2")
+    @UrlMapping(value = "/help", method = "GET")
     public void afficher()
     {
         System.out.println("Bonjour !!!");
