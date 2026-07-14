@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import mg.itu.annotation.url.UrlMapping;
 import mg.itu.util.ClassScanner;
+import mg.itu.util.ModelView;
 import mg.itu.util.UrlMethod;
 import mg.itu.annotation.controller.Controller;
 import java.io.*;
@@ -17,7 +18,6 @@ import java.util.Map;
 public class FrontControllerServlet extends HttpServlet {
 
     // private Map<UrlMethod, Method> urlMethodMap;
-
     // @Override
     // public void init() throws ServletException {
     //     super.init();
@@ -25,14 +25,12 @@ public class FrontControllerServlet extends HttpServlet {
     //     if (packageName == null || packageName.isEmpty()) {
     //         packageName = "controllers";
     //     }
-
     //     try {
     //         urlMethodMap = ClassScanner.getUrlMethodMap(packageName);
     //     } catch (Exception e) {
     //         throw new ServletException("Erreur init scan", e);
     //     }
     // }
-
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
@@ -82,11 +80,24 @@ public class FrontControllerServlet extends HttpServlet {
             Object controllerInstance = method.getDeclaringClass()
                     .getDeclaredConstructor()
                     .newInstance();
+            Object result = method.invoke(controllerInstance);
 
-            String result = (String) method.invoke(controllerInstance);
+            if (result instanceof String) {
+                out.println((String) result);
 
-            // Afficher le texte
-            out.println(result);
+            } else if (result instanceof ModelView) {
+                // Nouveau comportement — forward vers JSP
+                ModelView mv = (ModelView) result;
+
+                // Injecte les données dans la requête
+                for (Map.Entry<String, Object> entry : mv.getData().entrySet()) {
+                    req.setAttribute(entry.getKey(), entry.getValue());
+                }
+
+                // Forward vers la JSP
+                req.getRequestDispatcher("/WEB-INF/views/" + mv.getView() + ".jsp")
+                        .forward(req, resp);
+            }
 
         } catch (Exception e) {
             throw new ServletException("Erreur invocation", e);
