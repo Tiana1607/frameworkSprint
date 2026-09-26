@@ -14,7 +14,7 @@ TOMCAT_WEBAPPS="/home/rovatians/Téléchargements/logiciel/tomcat/apache-tomcat-
 mkdir -p $BUILD jar $TEST_WEBAPP/WEB-INF/lib $TEST_BUILD test/build
 
 echo "==== [1/5] COMPILATION FRAMEWORK ===="
-javac -cp $LIB -d $BUILD $(find $SRC -name "*.java")
+javac -cp "$LIB:lib/json-20240303.jar" -d $BUILD $(find $SRC -name "*.java")
 if [ $? -ne 0 ]; then echo "Erreur compilation framework"; exit 1; fi
 
 echo "==== [2/5] CREATION JAR ===="
