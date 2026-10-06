@@ -24,7 +24,7 @@
             %>
         </table> --%>
 
-        <form action="${pageContext.request.contextPath}/app/ajouter" method="post">
+        <form action="${pageContext.request.contextPath}/app/ajouterObjet" method="post">
             <input type="text" name="libelle" placeholder="Libellé"/>
             <input type="number" step="0.01" name="montant" placeholder="Montant"/>
             <button type="submit">Ajouter</button>

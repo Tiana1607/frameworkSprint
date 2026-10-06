@@ -1,10 +1,12 @@
-// test/src/main/java/models/Mouvement.java
 package models;
 
 public class Mouvement {
 
     private String libelle;
     private double montant;
+
+    public Mouvement() {
+    }
 
     public Mouvement(String libelle, double montant) {
         this.libelle = libelle;
@@ -15,7 +17,15 @@ public class Mouvement {
         return libelle;
     }
 
+    public void setLibelle(String libelle) {
+        this.libelle = libelle;
+    }
+
     public double getMontant() {
         return montant;
+    }
+
+    public void setMontant(double montant) {
+        this.montant = montant;
     }
 }

@@ -32,4 +32,18 @@ public class HomeController {
         mv.addData("message", "Ajouté : " + libelle + " - " + montant);
         return mv;
     }
+
+    @UrlMapping(value = "/ajouterObjet", method = "POST")
+    public ModelView ajouterObjet(Mouvement mouvement) {
+        System.out.println(mouvement.getLibelle());
+        System.out.println(mouvement.getMontant());
+
+        ModelView mv = new ModelView("home");
+        mv.addData(
+                "message",
+                "Ajouté : " + mouvement.getLibelle()
+                + " - " + mouvement.getMontant()
+        );
+        return mv;
+    }
 }
