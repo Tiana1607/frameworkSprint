@@ -1,14 +1,10 @@
 Derniers changements (Sprint 7) :
 ----
 ### Côté framework
-- modification buildArgs pour les verifs de type d'arguments
-- intégration buildArgs dans FrontControllerServet
+- création fonction isSimple et convert dans JsonUtil
+- modif buildArgs pour instanciation d'objet en plus de sprint7
 
 ### Côté développeur (test)
   - Ajout ModelView ajouterObjet(objet) dans HomeController avec POST
   - Ajout lien dans index.jsp
-  - Création formulaire dans home.jsp pour intégration message de confirmation vert
-
-### deploy.sh
-    Ajout de l'option -parameters sur COMPILATION FRAMEWORK et COMPILATION CONTROLLERS DE TEST
-  
+  - Modif action de form dans home.jsp pour pointer vers ajouterObjet
