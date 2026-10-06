@@ -10,5 +10,5 @@ Derniers changements (Sprint 7) :
   - Création formulaire dans home.jsp pour intégration message de confirmation vert
 
 ### deploy.sh
-    Ajout de l'option -parameters sur COMPILATION FRAMEWORK
+    Ajout de l'option -parameters sur COMPILATION FRAMEWORK et COMPILATION CONTROLLERS DE TEST
   
