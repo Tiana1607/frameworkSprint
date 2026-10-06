@@ -2,6 +2,7 @@ package controllers;
 
 import mg.itu.annotation.controller.Controller;
 import mg.itu.annotation.url.UrlMapping;
+import mg.itu.annotation.webapi.WebAPI;
 import mg.itu.util.ModelView;
 import models.Mouvement;
 
@@ -20,6 +21,15 @@ public class HomeController {
 
         ModelView mv = new ModelView("home");
         mv.addData("mouvements", mouvements);
+        return mv;
+    }
+
+    @UrlMapping(value = "/ajouter", method = "POST")
+    public ModelView ajouter(String libelle, double montant) {
+        System.out.println("Ajout : " + libelle + " / " + montant);
+
+        ModelView mv = new ModelView("home");
+        mv.addData("message", "Ajouté : " + libelle + " - " + montant);
         return mv;
     }
 }

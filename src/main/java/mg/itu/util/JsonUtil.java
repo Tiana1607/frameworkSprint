@@ -6,6 +6,7 @@ import jakarta.servlet.ServletContext;
 import org.json.JSONObject;
 import org.json.JSONArray;
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import java.util.List;
 
 public class JsonUtil {
@@ -23,23 +24,28 @@ public class JsonUtil {
     }
 
     // Construction des arguments selon les types des paramètres
-    public static Object[] buildArgs(Method method,
-            HttpServletRequest req,
-            HttpServletResponse resp,
-            ServletContext context) {
-        Class<?>[] paramTypes = method.getParameterTypes();
-        Object[] args = new Object[paramTypes.length];
+    public static Object[] buildArgs(Method method, HttpServletRequest req) {
+        Parameter[] params = method.getParameters();
+        Object[] args = new Object[params.length];
 
-        for (int i = 0; i < paramTypes.length; i++) {
-            String typeName = paramTypes[i].getName();
-            if (typeName.equals("jakarta.servlet.http.HttpServletRequest")) {
-                args[i] = req;
-            } else if (typeName.equals("jakarta.servlet.http.HttpServletResponse")) {
-                args[i] = resp;
+        for (int i = 0; i < params.length; i++) {
+            Class<?> type = params[i].getType();
+            String name = params[i].getName(); 
+
+            String value = req.getParameter(name);
+
+            if (type == String.class) {
+                args[i] = value;
+            } else if (type == int.class || type == Integer.class) {
+                args[i] = value != null ? Integer.parseInt(value) : 0;
+            } else if (type == double.class || type == Double.class) {
+                args[i] = value != null ? Double.parseDouble(value) : 0.0;
+            } else if (type == boolean.class || type == Boolean.class) {
+                args[i] = value != null ? Boolean.parseBoolean(value) : false;
+            } else if (type == long.class || type == Long.class) {
+                args[i] = value != null ? Long.parseLong(value) : 0L;
             } else {
-                String attrName = paramTypes[i].getSimpleName().substring(0, 1).toLowerCase()
-                        + paramTypes[i].getSimpleName().substring(1);
-                args[i] = context.getAttribute(attrName);
+                args[i] = null;
             }
         }
         return args;

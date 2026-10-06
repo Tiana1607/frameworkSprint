@@ -1,16 +1,14 @@
-Derniers changements (Sprint 6) :
+Derniers changements (Sprint 7) :
 ----
 ### Côté framework
-- Ajout json.jar dans lib
-- Création package webapi
-- Création annotation WebAPI
-- Création de la classe JsonUtil dans package util avec : toJson() et buildArgs()
-- Ajout condition de vérification dans FrontControllerServlet
+- modification buildArgs pour les verifs de type d'arguments
+- intégration buildArgs dans FrontControllerServet
 
 ### Côté développeur (test)
-  - Création de la classe APIController dans package controllers + ajout de données et annotation : testAPI()
-  - Ajout lien dans home.jsp
+  - Création de la classe FormController dans package controllers + ajout ModelView ajouter(...)
+  - Ajout lien dans index.jsp
+  - Création formulaire dans home.jsp pour intégration message de confirmation vert
 
 ### deploy.sh
-    Ajout de la lib json.jar dans COMPILATION FRAMEWORK
+    Ajout de l'option -parameters sur COMPILATION FRAMEWORK
   

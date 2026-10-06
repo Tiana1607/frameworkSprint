@@ -69,7 +69,7 @@ public class FrontControllerServlet extends HttpServlet {
                     .getDeclaredConstructor()
                     .newInstance();
 
-            Object[] args = JsonUtil.buildArgs(method, req, resp, getServletContext());
+            Object[] args = JsonUtil.buildArgs(method, req);
             Object result = method.invoke(controllerInstance, args);
 
             if (method.isAnnotationPresent(WebAPI.class)) {
