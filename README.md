@@ -5,7 +5,7 @@ Derniers changements (Sprint 7) :
 - intégration buildArgs dans FrontControllerServet
 
 ### Côté développeur (test)
-  - Création de la classe FormController dans package controllers + ajout ModelView ajouter(...)
+  - Ajout ModelView ajouter(...) dans HomeController avec POST
   - Ajout lien dans index.jsp
   - Création formulaire dans home.jsp pour intégration message de confirmation vert
 
