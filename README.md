@@ -1,4 +1,4 @@
-Derniers changements (Sprint 7) :
+Derniers changements (Sprint 7.bis) :
 ----
 ### Côté framework
 - création fonction isSimple et convert dans JsonUtil
