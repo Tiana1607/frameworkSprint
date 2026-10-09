@@ -1,7 +1,7 @@
 Derniers changements (Sprint 7.bis) :
 ----
 ### Côté framework
-- création fonction isSimple et convert dans JsonUtil
+- création fonction isSimple et convert et buildObject dans JsonUtil
 - modif buildArgs pour instanciation d'objet en plus de sprint7
 
 ### Côté développeur (test)
