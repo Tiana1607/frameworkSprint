@@ -38,7 +38,7 @@ public class JsonUtil {
             if (isSimpleType(type)) {
                 args[i] = convert(value, type);
             } else {
-                args[i] = buildObject(type, req);
+                args[i] = buildObject(type, req, parameterName);
             }
         }
 
@@ -73,7 +73,7 @@ public class JsonUtil {
         return null;
     }
 
-    private static Object buildObject(Class<?> type, HttpServletRequest req) {
+    private static Object buildObject(Class<?> type, HttpServletRequest req, String prefix) {
         try {
             Object object = type.getDeclaredConstructor().newInstance();
 
@@ -81,21 +81,17 @@ public class JsonUtil {
                     : Introspector.getBeanInfo(type, Object.class).getPropertyDescriptors()) {
 
                 Method setter = property.getWriteMethod();
-
                 if (setter != null) {
-                    String value = req.getParameter(property.getName());
-
+                    String value = req.getParameter(prefix + "." + property.getName());
                     if (value != null) {
                         Object converted = convert(value, property.getPropertyType());
                         setter.invoke(object, converted);
                     }
                 }
             }
-
             return object;
         } catch (Exception e) {
-            throw new IllegalArgumentException(
-                    "Impossible de construire l'objet " + type.getName(), e);
+            throw new IllegalArgumentException("Impossible de construire " + type.getName(), e);
         }
     }
 }

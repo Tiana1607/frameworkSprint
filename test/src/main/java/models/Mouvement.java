@@ -4,6 +4,7 @@ public class Mouvement {
 
     private String libelle;
     private double montant;
+    private String nom;
 
     public Mouvement() {
     }
@@ -27,5 +28,13 @@ public class Mouvement {
 
     public void setMontant(double montant) {
         this.montant = montant;
+    }
+
+    public String getNom() {
+        return nom;
+    }
+
+    public void setNom(String nom) {
+        this.nom = nom;
     }
 }

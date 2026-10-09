@@ -9,6 +9,8 @@ import models.Mouvement;
 import java.util.ArrayList;
 import java.util.List;
 
+import models.User;
+
 @Controller
 public class HomeController {
 
@@ -34,15 +36,19 @@ public class HomeController {
     }
 
     @UrlMapping(value = "/ajouterObjet", method = "POST")
-    public ModelView ajouterObjet(Mouvement mouvement) {
+    public ModelView ajouterObjet(Mouvement mouvement, User u) {
         System.out.println(mouvement.getLibelle());
         System.out.println(mouvement.getMontant());
+        System.out.println(u.getNom());
+        System.out.println(u.getAge());
 
         ModelView mv = new ModelView("home");
         mv.addData(
                 "message",
-                "Ajouté : " + mouvement.getLibelle()
-                + " - " + mouvement.getMontant()
+                "Mouvement " + mouvement.getNom() + " ajouté : " + mouvement.getLibelle()
+                + " - " + mouvement.getMontant() +
+                " par : " + u.getNom() + " d'âge : " +
+                u.getAge()
         );
         return mv;
     }
