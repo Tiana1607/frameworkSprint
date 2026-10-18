@@ -24,18 +24,24 @@
         %>
         </table> --%>
 
-        <form action="${pageContext.request.contextPath}/app/ajouterObjet" method="post">
-            <input type="text" name="mouvement.nom" placeholder="Nom Mouvement"/>
-            <input type="text" name="mouvement.libelle" placeholder="Libellé"/>
-            <input type="number" step="0.01" name="mouvement.montant" placeholder="Montant"/>
-            <input type="text" name="u.nom" placeholder="Nom"/>
-            <input type="number" name="u.age" placeholder="Age"/>
-            <button type="submit">Ajouter</button>
+        <%-- <form action="${pageContext.request.contextPath}/app/ajouterObjet" method="post">
+        <input type="text" name="mouvement.nom" placeholder="Nom Mouvement"/>
+        <input type="text" name="mouvement.libelle" placeholder="Libellé"/>
+        <input type="number" step="0.01" name="mouvement.montant" placeholder="Montant"/>
+        <input type="text" name="u.nom" placeholder="Nom"/>
+        <input type="number" name="u.age" placeholder="Age"/>
+        <button type="submit">Ajouter</button>
+        </form><br><br> --%>
+
+        <form action="${pageContext.request.contextPath}/app/upload"
+            method="post"
+            enctype="multipart/form-data">
+            <input type="file" name="fichier"/>
+            <button type="submit">Uploader</button>
         </form><br><br>
 
-
-        <% if (request.getAttribute("message") != null) { %>
-        <p style="color:green"><%= request.getAttribute("message") %></p>
-        <% } %>
-    </body>
+    <% if (request.getAttribute("message") != null) { %>
+    <p style="color:green"><%= request.getAttribute("message") %></p>
+    <% } %>
+</body>
 </html>

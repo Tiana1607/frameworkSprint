@@ -10,6 +10,7 @@ import mg.itu.util.JsonUtil;
 import mg.itu.util.ModelView;
 import mg.itu.util.UrlMethod;
 import mg.itu.annotation.controller.Controller;
+import jakarta.servlet.annotation.MultipartConfig;
 
 import java.io.*;
 import java.lang.reflect.Method;
@@ -18,21 +19,23 @@ import java.util.Map;
 
 import mg.itu.annotation.webapi.WebAPI;
 
+@MultipartConfig
 public class FrontControllerServlet extends HttpServlet {
 
     // private Map<UrlMethod, Method> urlMethodMap;
     // @Override
     // public void init() throws ServletException {
-    //     super.init();
-    //     String packageName = getServletConfig().getInitParameter("controllerPackage");
-    //     if (packageName == null || packageName.isEmpty()) {
-    //         packageName = "controllers";
-    //     }
-    //     try {
-    //         urlMethodMap = ClassScanner.getUrlMethodMap(packageName);
-    //     } catch (Exception e) {
-    //         throw new ServletException("Erreur init scan", e);
-    //     }
+    // super.init();
+    // String packageName =
+    // getServletConfig().getInitParameter("controllerPackage");
+    // if (packageName == null || packageName.isEmpty()) {
+    // packageName = "controllers";
+    // }
+    // try {
+    // urlMethodMap = ClassScanner.getUrlMethodMap(packageName);
+    // } catch (Exception e) {
+    // throw new ServletException("Erreur init scan", e);
+    // }
     // }
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -50,8 +53,7 @@ public class FrontControllerServlet extends HttpServlet {
             throws ServletException, IOException {
         resp.setContentType("text/html;charset=UTF-8");
 
-        Map<UrlMethod, Method> urlMethodMap
-                = (Map<UrlMethod, Method>) getServletContext().getAttribute("urlMethodMap");
+        Map<UrlMethod, Method> urlMethodMap = (Map<UrlMethod, Method>) getServletContext().getAttribute("urlMethodMap");
 
         String url = req.getRequestURI().substring(req.getContextPath().length());
         url = url.substring("/app".length());
@@ -69,7 +71,7 @@ public class FrontControllerServlet extends HttpServlet {
                     .getDeclaredConstructor()
                     .newInstance();
 
-            Object[] args = JsonUtil.buildArgs(method, req);
+            Object[] args = JsonUtil.buildArgs(method, req, getServletContext());
             Object result = method.invoke(controllerInstance, args);
 
             if (method.isAnnotationPresent(WebAPI.class)) {
