@@ -48,14 +48,20 @@ public class JsonUtil {
             } else if (servletContext != null && servletContext.getAttribute(
                     type.getSimpleName().substring(0, 1).toLowerCase()
                             + type.getSimpleName().substring(1)) != null) {
-                // Récupère depuis le ServletContext par nom camelCase
-                // ex: ApplicationContext → "applicationContext"
                 String attrName = type.getSimpleName().substring(0, 1).toLowerCase()
                         + type.getSimpleName().substring(1);
                 args[i] = servletContext.getAttribute(attrName);
 
             } else {
-                args[i] = buildObject(type, req, name);
+                String attrName = type.getSimpleName().substring(0, 1).toLowerCase()
+                        + type.getSimpleName().substring(1);
+                Object attr = servletContext.getAttribute(attrName);
+                System.out.println("DEBUG attrName=" + attrName + " attr=" + attr);
+                if (servletContext != null && attr != null) {
+                    args[i] = attr;
+                } else {
+                    args[i] = buildObject(type, req, name);
+                }
             }
         }
         return args;

@@ -23,8 +23,10 @@ cp $JAR_OUT $TEST_WEBAPP/WEB-INF/lib/framework.jar
 echo "framework.jar créé"
 
 echo "==== [3/5] COMPILATION CONTROLLERS DE TEST ===="
-javac -cp "$LIB:$JAR_OUT" -parameters -d $TEST_BUILD $(find $TEST_SRC -name "*.java")
+TEST_CP="$LIB:$JAR_OUT:$(find "$TEST_WEBAPP/WEB-INF/lib" -name '*.jar' | tr '\n' ':')"
+javac -cp "$TEST_CP" -parameters -d $TEST_BUILD $(find $TEST_SRC -name "*.java")
 if [ $? -ne 0 ]; then echo "Erreur compilation test"; exit 1; fi
+cp -r test/src/main/resources/. "$TEST_BUILD/"
 
 echo "==== [4/5] CREATION WAR ===="
 jar cf $WAR_OUT -C $TEST_WEBAPP .

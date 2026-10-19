@@ -1,6 +1,8 @@
 package models;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 @Entity
 @Table(name = "fichier")
@@ -13,8 +15,8 @@ public class Fichier {
     private String extension;
     private long size;
 
-    @Lob
     @Column(columnDefinition = "BYTEA")
+    @JdbcTypeCode(SqlTypes.VARBINARY)
     private byte[] content;
 
     // Getters
