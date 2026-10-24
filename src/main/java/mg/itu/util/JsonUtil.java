@@ -13,6 +13,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import jakarta.servlet.ServletContext;
@@ -39,9 +41,21 @@ public class JsonUtil {
             Class<?> type = params[i].getType();
             String name = params[i].getName();
 
-            if (type == MapFile.class) {
+            if (type == MySession.class) {
+                args[i] = new MySession(req.getSession(true)); // crée la session si elle n'existe pas
+
+            }
+            else if (type == MapFile.class) {
                 args[i] = buildMapFile(req, name);
 
+            } else if (type == MapFile[].class) {
+                args[i] = buildMapFiles(req, name);
+
+            } else if (List.class.isAssignableFrom(type)
+                    && params[i].getParameterizedType() instanceof java.lang.reflect.ParameterizedType pt
+                    && pt.getActualTypeArguments()[0] == MapFile.class) {
+                MapFile[] mapFiles = buildMapFiles(req, name);
+                args[i] = new ArrayList<MapFile>(Arrays.asList(mapFiles));
             } else if (isSimpleType(type)) {
                 args[i] = convert(req.getParameter(name), type);
 
@@ -174,5 +188,27 @@ public class JsonUtil {
             }
             return output.toByteArray();
         }
+    }
+
+    public static MapFile[] buildMapFiles(HttpServletRequest req, String name)
+            throws IOException, ServletException {
+
+        List<MapFile> files = new ArrayList<>();
+        if (!isMultipart(req))
+            return new MapFile[0];
+
+        for (Part part : req.getParts()) {
+            if (!name.equals(part.getName()))
+                continue; // autre champ du formulaire
+
+            String submitted = part.getSubmittedFileName();
+            if (submitted == null || submitted.isEmpty())
+                continue; // champ texte ou aucun fichier choisi
+
+            String filename = extractFilename(submitted);
+            String extension = extractExtension(filename);
+            files.add(new MapFile(filename, extension, readBytes(part)));
+        }
+        return files.toArray(new MapFile[0]);
     }
 }

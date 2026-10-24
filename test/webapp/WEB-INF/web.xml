@@ -15,6 +15,10 @@
         <listener-class>mg.itu.listener.FrontControllerListener</listener-class>
     </listener>
 
+     <session-config>
+        <session-timeout>1</session-timeout> <!-- minutes -->
+    </session-config>
+
     <servlet>
         <servlet-name>FrontController</servlet-name>
         <servlet-class>mg.itu.FrontControllerServlet</servlet-class>
@@ -28,11 +32,9 @@
 
     <!-- <load-on-startup>1</load-on-startup> -->
 
-    
 
     <servlet-mapping>
         <servlet-name>FrontController</servlet-name>
         <url-pattern>/app/*</url-pattern>
     </servlet-mapping>
-
 </web-app>
