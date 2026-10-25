@@ -5,6 +5,7 @@
     <a href="/monapp/app/home">ModelView</a><br>
     <a href="/monapp/app/apimouvement">ApiMouvement</a><br>
     <a href="/monapp/app/home">Formulaire Sprint7</a><br>
-    <a href="/monapp/app/profil">Session</a>
+    <a href="/monapp/app/profil">Session</a><br>
+    <a href="/monapp/app/secret">Auth</a>
   </body>
 </html>

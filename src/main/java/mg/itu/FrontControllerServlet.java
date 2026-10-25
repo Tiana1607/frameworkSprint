@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import mg.itu.annotation.url.UrlMapping;
+import mg.itu.util.AuthUtil;
 import mg.itu.util.ClassScanner;
 import mg.itu.util.JsonUtil;
 import mg.itu.util.ModelView;
@@ -65,6 +66,24 @@ public class FrontControllerServlet extends HttpServlet {
             resp.sendError(404, "Aucune route : " + key);
             return;
         }
+
+        if (AuthUtil.isAuthRequired(method)) {
+            String authkey = getServletContext().getInitParameter("authSessionKey");
+            if (authkey == null)
+                authkey = "user";
+
+            if (!AuthUtil.isAuthenticated(req, authkey)) {
+                String loginUrl = getServletContext().getInitParameter("loginUrl");
+
+                if (loginUrl != null && !method.isAnnotationPresent(WebAPI.class)) {
+                    resp.sendRedirect(req.getContextPath() + "/app" + loginUrl);
+                } else {
+                    resp.sendError(401, "Authentification requise");
+                }
+                return;
+            }
+        }
+        
 
         try {
             Object controllerInstance = method.getDeclaringClass()

@@ -1,4 +1,6 @@
 package controllers;
+
+import mg.itu.annotation.auth.Authenticated;
 import mg.itu.annotation.controller.Controller;
 import mg.itu.annotation.url.UrlMapping;
 import mg.itu.util.ModelView;
@@ -31,6 +33,14 @@ public class AuthController {
         session.invalidate();
         ModelView mv = new ModelView("profil");
         mv.addData("message", "Déconnecté");
+        return mv;
+    }
+
+    @UrlMapping(value = "/secret", method = "GET")
+    @Authenticated
+    public ModelView secret(MySession session) {
+        ModelView mv = new ModelView("profil");
+        mv.addData("message", "Zone secrète, bienvenue " + session.get("user"));
         return mv;
     }
 }
