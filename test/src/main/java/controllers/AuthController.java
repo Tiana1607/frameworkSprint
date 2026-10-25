@@ -1,6 +1,7 @@
 package controllers;
 
 import mg.itu.annotation.auth.Authenticated;
+import mg.itu.annotation.auth.Role;
 import mg.itu.annotation.controller.Controller;
 import mg.itu.annotation.url.UrlMapping;
 import mg.itu.util.ModelView;
@@ -9,13 +10,13 @@ import mg.itu.util.MySession;
 @Controller
 public class AuthController {
 
-    @UrlMapping(value = "/login", method = "POST")
-    public ModelView login(String nom, MySession session) {
-        session.set("user", nom);
-        ModelView mv = new ModelView("profil");
-        mv.addData("message", "Connecté : " + nom);
-        return mv;
-    }
+    // @UrlMapping(value = "/login", method = "POST")
+    // public ModelView login(String nom, MySession session) {
+    // session.set("user", nom);
+    // ModelView mv = new ModelView("profil");
+    // mv.addData("message", "Connecté : " + nom);
+    // return mv;
+    // }
 
     @UrlMapping(value = "/profil", method = "GET")
     public ModelView profil(MySession session) {
@@ -36,11 +37,36 @@ public class AuthController {
         return mv;
     }
 
-    @UrlMapping(value = "/secret", method = "GET")
-    @Authenticated
-    public ModelView secret(MySession session) {
+    // @UrlMapping(value = "/secret", method = "GET")
+    // @Authenticated
+    // public ModelView secret(MySession session) {
+    // ModelView mv = new ModelView("profil");
+    // mv.addData("message", "Zone secrète, bienvenue " + session.get("user"));
+    // return mv;
+    // }
+
+    @UrlMapping(value = "/login", method = "POST")
+    public ModelView login(String nom, String role, MySession session) {
+        session.set("user", nom);
+        session.set("role", role); 
         ModelView mv = new ModelView("profil");
-        mv.addData("message", "Zone secrète, bienvenue " + session.get("user"));
+        mv.addData("message", "Connecté : " + nom + " (" + role + ")");
+        return mv;
+    }
+
+    @UrlMapping(value = "/admin", method = "GET")
+    @Role("admin")
+    public ModelView admin(MySession session) {
+        ModelView mv = new ModelView("profil");
+        mv.addData("message", "Espace admin, bienvenue " + session.get("user"));
+        return mv;
+    }
+
+    @UrlMapping(value = "/gestion", method = "GET")
+    @Role({ "admin", "manager" })
+    public ModelView gestion(MySession session) {
+        ModelView mv = new ModelView("profil");
+        mv.addData("message", "Espace gestion, bienvenue " + session.get("user"));
         return mv;
     }
 }

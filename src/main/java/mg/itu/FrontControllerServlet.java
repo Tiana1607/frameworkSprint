@@ -57,7 +57,7 @@ public class FrontControllerServlet extends HttpServlet {
         Map<UrlMethod, Method> urlMethodMap = (Map<UrlMethod, Method>) getServletContext().getAttribute("urlMethodMap");
 
         String url = req.getRequestURI().substring(req.getContextPath().length());
-        url = url.substring("/app".length());
+        url = url.substring(req.getServletPath().length());
         String httpMethod = req.getMethod();
         UrlMethod key = new UrlMethod(url, httpMethod);
         Method method = urlMethodMap.get(key);
@@ -76,14 +76,25 @@ public class FrontControllerServlet extends HttpServlet {
                 String loginUrl = getServletContext().getInitParameter("loginUrl");
 
                 if (loginUrl != null && !method.isAnnotationPresent(WebAPI.class)) {
-                    resp.sendRedirect(req.getContextPath() + "/app" + loginUrl);
+                    resp.sendRedirect(req.getContextPath() + req.getServletPath() + loginUrl);
                 } else {
                     resp.sendError(401, "Authentification requise");
                 }
                 return;
             }
         }
-        
+
+        String[] requiredRoles = AuthUtil.getRequiredRoles(method);
+        if (requiredRoles != null) {
+            String roleKey = getServletContext().getInitParameter("roleSessionKey");
+            if (roleKey == null)
+                roleKey = "role";
+
+            if (!AuthUtil.hasRole(req, roleKey, requiredRoles)) {
+                resp.sendError(403, "Accès refusé : rôle insuffisant");
+                return;
+            }
+        }
 
         try {
             Object controllerInstance = method.getDeclaringClass()
