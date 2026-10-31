@@ -7,6 +7,7 @@ import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
 import mg.itu.util.ClassScanner;
+import mg.itu.util.ControllerRegistry;
 import mg.itu.util.UrlMethod;
 
 public class FrontControllerListener implements ServletContextListener {
@@ -24,6 +25,10 @@ public class FrontControllerListener implements ServletContextListener {
             Map<UrlMethod, Method> urlMethodMap = ClassScanner.getUrlMethodMap(packageName);
 
             sc.setAttribute("urlMethodMap", urlMethodMap);
+
+            for (Method m : urlMethodMap.values()) {
+                ControllerRegistry.getInstance(m.getDeclaringClass());
+            }
 
             System.out.println("==== Listener : " + urlMethodMap.size() + " routes enregistrées ====");
         } catch (Exception e) {

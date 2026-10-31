@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import mg.itu.annotation.url.UrlMapping;
 import mg.itu.util.AuthUtil;
 import mg.itu.util.ClassScanner;
+import mg.itu.util.ControllerRegistry;
 import mg.itu.util.JsonUtil;
 import mg.itu.util.ModelView;
 import mg.itu.util.UrlMethod;
@@ -56,8 +57,11 @@ public class FrontControllerServlet extends HttpServlet {
 
         Map<UrlMethod, Method> urlMethodMap = (Map<UrlMethod, Method>) getServletContext().getAttribute("urlMethodMap");
 
-        String url = req.getRequestURI().substring(req.getContextPath().length());
-        url = url.substring(req.getServletPath().length());
+        // String url = req.getRequestURI().substring(req.getContextPath().length());
+        String url = req.getPathInfo();
+        if (url == null)
+            url = "/";
+        // url = url.substring(req.getServletPath().length());
         String httpMethod = req.getMethod();
         UrlMethod key = new UrlMethod(url, httpMethod);
         Method method = urlMethodMap.get(key);
@@ -97,9 +101,11 @@ public class FrontControllerServlet extends HttpServlet {
         }
 
         try {
-            Object controllerInstance = method.getDeclaringClass()
-                    .getDeclaredConstructor()
-                    .newInstance();
+            // Object controllerInstance = method.getDeclaringClass()
+            // .getDeclaredConstructor()
+            // .newInstance();
+
+            Object controllerInstance = ControllerRegistry.getInstance(method.getDeclaringClass());
 
             Object[] args = JsonUtil.buildArgs(method, req, getServletContext());
             Object result = method.invoke(controllerInstance, args);
@@ -116,10 +122,9 @@ public class FrontControllerServlet extends HttpServlet {
                 req.getRequestDispatcher("/WEB-INF/views/" + mv.getView() + ".jsp")
                         .forward(req, resp);
 
-            } else if (result instanceof String || !method.isAnnotationPresent(WebAPI.class)) {
+            } else if (result instanceof String) {
                 resp.setContentType("text/html;charset=UTF-8");
-                PrintWriter out = resp.getWriter();
-                out.println((String) result);
+                resp.getWriter().println((String) result);
             }
 
         } catch (Exception e) {

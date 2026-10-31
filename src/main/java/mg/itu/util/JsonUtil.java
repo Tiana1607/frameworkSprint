@@ -44,16 +44,13 @@ public class JsonUtil {
             if (type == MySession.class) {
                 args[i] = new MySession(req.getSession(true)); // crée la session si elle n'existe pas
 
-            }
-            else if (type == MapFile.class) {
+            } else if (type == MapFile.class) {
                 args[i] = buildMapFile(req, name);
 
             } else if (type == MapFile[].class) {
                 args[i] = buildMapFiles(req, name);
 
-            } else if (List.class.isAssignableFrom(type)
-                    && params[i].getParameterizedType() instanceof java.lang.reflect.ParameterizedType pt
-                    && pt.getActualTypeArguments()[0] == MapFile.class) {
+            } else if (List.class.isAssignableFrom(type) && params[i].getParameterizedType() instanceof java.lang.reflect.ParameterizedType pt && pt.getActualTypeArguments()[0] == MapFile.class) {
                 MapFile[] mapFiles = buildMapFiles(req, name);
                 args[i] = new ArrayList<MapFile>(Arrays.asList(mapFiles));
             } else if (isSimpleType(type)) {

@@ -46,10 +46,17 @@ public class HomeController {
         mv.addData(
                 "message",
                 "Mouvement " + mouvement.getNom() + " ajouté : " + mouvement.getLibelle()
-                + " - " + mouvement.getMontant() +
-                " par : " + u.getNom() + " d'âge : " +
-                u.getAge()
-        );
+                        + " - " + mouvement.getMontant() +
+                        " par : " + u.getNom() + " d'âge : " +
+                        u.getAge());
         return mv;
+    }
+
+    private int compteur = 0;
+
+    @UrlMapping(value = "/compteur", method = "GET")
+    public String compteur() {
+        compteur++;
+        return "Appel numéro " + compteur;
     }
 }
